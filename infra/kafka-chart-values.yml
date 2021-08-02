@@ -1,0 +1,9 @@
+podSecurityContext:
+  enabled: false
+persistence:
+  enabled: false
+zookeeper:
+  securityContext:
+    enabled: false
+  persistence:
+    enabled: false

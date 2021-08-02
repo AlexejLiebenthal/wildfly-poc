@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>de.vkb.alex</groupId>
+  <artifactId>demo</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <properties>
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <failOnMissingWebXml>false</failOnMissingWebXml>
+
+    <version.jakartaee>8.0.0</version.jakartaee>
+    <version.maven-dependency-plugin>3.2.0</version.maven-dependency-plugin>
+    <version.microprofile>4.0.1</version.microprofile>
+    <version.wildfly>24.0.1.Final</version.wildfly>
+    <version.wildfly-jar-maven-plugin>5.0.2.Final</version.wildfly-jar-maven-plugin>
+    <version.wildfly-datasources-galleon-pack>2.0.3.Final</version.wildfly-datasources-galleon-pack>
+    <version.wildfly-microprofile-reactive-feature-pack>2.0.0.Final</version.wildfly-microprofile-reactive-feature-pack>
+  </properties>
+
+  <dependencyManagement>
+    <!-- Wildfly BOMs-->
+    <dependencies>
+      <dependency>
+        <groupId>org.wildfly</groupId>
+        <artifactId>wildfly-microprofile</artifactId>
+        <version>${version.wildfly}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.wildfly.bom</groupId>
+        <artifactId>wildfly-jakartaee8</artifactId>
+        <version>${version.wildfly}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+
+      <!-- Jakarta API und BOM-->
+      <!-- <dependency>
+        <groupId>jakarta.platform</groupId>
+        <artifactId>jakarta.jakartaee-api</artifactId>
+        <version>${version.jakartaee}</version>
+      </dependency>
+      <dependency>
+        <groupId>jakarta.platform</groupId>
+        <artifactId>jakarta.jakartaee-bom</artifactId>
+        <version>${version.jakartaee}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency> -->
+
+      <!-- MicroProfile BOM -->
+      <!-- <dependency>
+        <groupId>org.eclipse.microprofile</groupId>
+        <artifactId>microprofile</artifactId>
+        <version>${version.microprofile}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency> -->
+
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- Full Jakarta EE API-->
+    <!--
+      In theory only this dependency can be used to get the full JEE-API
+    -->
+    <!-- <dependency>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-api</artifactId>
+      <scope>provided</scope>
+    </dependency> -->
+
+    <!-- Jakarta CDI -->
+    <dependency>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Jakarta WS RS -->
+    <!--
+      Some JEE-Specs in the Wildfly-BOM have their own propertiary maven dependencies
+    -->
+    <!-- <dependency>
+      <groupId>jakarta.ws.rs</groupId>
+      <artifactId>jakarta.ws.rs-api</artifactId>
+      <scope>provided</scope>
+    </dependency> -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.ws.rs</groupId>
+      <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Jakarta Inject -->
+    <dependency>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Jakarta JSON-B -->
+    <dependency>
+      <groupId>jakarta.json.bind</groupId>
+      <artifactId>jakarta.json.bind-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- MP Config -->
+    <dependency>
+      <groupId>org.eclipse.microprofile.config</groupId>
+      <artifactId>microprofile-config-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- MP Rest Client -->
+    <dependency>
+      <groupId>org.eclipse.microprofile.rest.client</groupId>
+      <artifactId>microprofile-rest-client-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- MP Fault Tolerance -->
+    <dependency>
+      <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
+      <artifactId>microprofile-fault-tolerance-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- MP Reactive Messaging -->
+    <!-- 
+      The MP Reactive Messaging (RM) API is provided in the Version 1.0 and not in the recent release of the 2.0 spec. 
+      But the provided SmallRye RM implements already also the MP RM 2.0 Spec.
+      The server must be started with the following argument `-Djboss.as.reactive.messaging.experimental=true`. 
+      Like this the new/experimental features of the MP RM 2.0 Spec like `Channel` and `Emitter` can be used.
+    -->
+    <!-- <dependency>
+      <groupId>org.eclipse.microprofile.reactive.messaging</groupId>
+      <artifactId>microprofile-reactive-messaging-api</artifactId>
+      <scope>provided</scope>
+      <version>2.0</version>
+    </dependency> -->
+    <dependency>
+      <groupId>io.smallrye.reactive</groupId>
+      <artifactId>smallrye-reactive-messaging-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- MP Reactive Streams -->
+    <dependency>
+      <groupId>org.eclipse.microprofile.reactive-streams-operators</groupId>
+      <artifactId>microprofile-reactive-streams-operators-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- RxJava / Mutiny -->
+    <!-- 
+      Somehow I can't get Mutiny and RxJava3 to run on Wildfly, even when you see that the jars are provided in the modules folder
+    -->
+    <!-- <dependency>
+      <groupId>io.smallrye.reactive</groupId>
+      <artifactId>mutiny</artifactId>
+      <scope>provided</scope>
+    </dependency> -->
+    <!-- <dependency>
+      <groupId>io.reactivex.rxjava3</groupId>
+      <artifactId>rxjava</artifactId>
+      <scope>provided</scope>
+    </dependency> -->
+    <dependency>
+      <groupId>io.reactivex.rxjava2</groupId>
+      <artifactId>rxjava</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Smallrye Reactive Messaging Kafka -->
+    <dependency>
+      <groupId>io.smallrye.reactive</groupId>
+      <artifactId>smallrye-reactive-messaging-kafka</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- reactivestreams.org -->
+    <dependency>
+      <groupId>org.reactivestreams</groupId>
+      <artifactId>reactive-streams</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- kafka -->
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- JBoss RestEasy -->
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>${project.artifactId}</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.wildfly.plugins</groupId>
+          <artifactId>wildfly-jar-maven-plugin</artifactId>
+          <version>${version.wildfly-jar-maven-plugin}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${version.maven-dependency-plugin}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.wildfly.plugins</groupId>
+        <artifactId>wildfly-jar-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>package</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <feature-packs>
+            <feature-pack>
+              <location>wildfly@maven(org.jboss.universe:community-universe)#${version.wildfly}</location>
+            </feature-pack>
+            <feature-pack>
+              <groupId>org.wildfly</groupId>
+              <artifactId>wildfly-datasources-galleon-pack</artifactId>
+              <version>${version.wildfly-datasources-galleon-pack}</version>
+            </feature-pack>
+            <feature-pack>
+              <groupId>org.wildfly.extras.reactive</groupId>
+              <artifactId>wildfly-microprofile-reactive-feature-pack</artifactId>
+              <version>${version.wildfly-microprofile-reactive-feature-pack}</version>
+            </feature-pack>
+          </feature-packs>
+          <!-- <hollowJar>true</hollowJar> -->
+          <layers>
+            <layer>cloud-profile</layer>
+            <layer>microprofile-platform</layer>
+            <layer>microprofile-reactive-messaging-kafka</layer>
+            <layer>microprofile-context-propagation-jta</layer>
+            <layer>h2-default-datasource</layer>
+            <!-- <layer>postgresql-default-datasource</layer> -->
+          </layers>
+          <excluded-layers>
+            <layer>deployment-scanner</layer>
+          </excluded-layers>
+          <jvmArguments>
+            <argument>-Djboss.as.reactive.messaging.experimental=true</argument>
+          </jvmArguments>
+          <plugin-options>
+            <jboss-fork-embedded>true</jboss-fork-embedded>
+          </plugin-options>
+          <!-- <dump-original-artifacts>true</dump-original-artifacts> -->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>openshift</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.wildfly.plugins</groupId>
+            <artifactId>wildfly-jar-maven-plugin</artifactId>
+            <configuration>
+              <cloud />
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>debug</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.wildfly.plugins</groupId>
+            <artifactId>wildfly-jar-maven-plugin</artifactId>
+            <configuration>
+              <jvmArguments>
+                <arg>-agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=n</arg>
+              </jvmArguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>
