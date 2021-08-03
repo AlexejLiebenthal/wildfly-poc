@@ -1,14 +1,22 @@
 build:
-  uri: ""
+  uri: "https://github.com/AlexejLiebenthal/wildfly-poc.git"
   mode: bootable-jar
   env:
     - name: ARTIFACT_DIR
       value: target
     - name: MAVEN_ARGS_APPEND
       value: "-Popenshift"
+    - name: MAVEN_OPTS
+      value: "-XX:MetaspaceSize=251m -XX:MaxMetaspaceSize=256m"
 deploy:
   env:
     - name: name
       value: Alex in Cloud
     - name: mp.messaging.connector.smallrye-kafka.bootstrap.servers
-      value: mail-kafka.alexej-liebenthal-dev.svc.cluster.local:9092
+      value: mail-kafka:9092
+    - name: JAVA_OPTS_APPEND
+      value: -Djboss.as.reactive.messaging.experimental=true
+    - name: GC_METASPACE_SIZE
+      value: "96"
+    - name: GC_MAX_METASPACE_SIZE
+      value: "256"
