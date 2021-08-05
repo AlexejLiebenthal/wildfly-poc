@@ -1,6 +1,19 @@
-version: "2"
+version: "3"
 
 services:
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3000:3000
+      - 9229:9229
+    environment:
+      - BACKEND_API_URI=host.docker.internal:8080/api
+    stdin_open: true
+    volumes:
+      - ./frontend:/usr/src/app
+      - frontend_node_modules:/usr/src/app/node_modules
   zookeeper:
     image: bitnami/zookeeper:3.7
     ports:
@@ -28,4 +41,6 @@ volumes:
   zookeeper_data:
     driver: local
   kafka_data:
+    driver: local
+  frontend_node_modules:
     driver: local

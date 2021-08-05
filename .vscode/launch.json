@@ -5,11 +5,18 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Debug Wildfly",
       "type": "java",
       "request": "attach",
-      "name": "Debug Wildfly",
       "hostName": "localhost",
       "port": 8787
+    },
+    {
+      "name": "Debug React",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/frontend"
     }
   ]
 }

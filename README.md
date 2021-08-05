@@ -1,12 +1,12 @@
 # Wildfly POC
 
 This is a case study, how Wildfly could be used in modern (cloud native) application development.
-Therefor I like to test several simple use cases with Wildfly-Jar-Maven-Plugin, Galleon Provisioning, JakartaEE8, MicroProfile, Kafka, Reactive Programming.
+Therefore I like to test several simple use cases with Wildfly-Jar-Maven-Plugin, Galleon Provisioning, JakartaEE8, MicroProfile, Kafka, Reactive Programming.
 
 ## Local
 
-Locally you can start a test instance of Kafka/Zookeeper with `docker compose up`.
-Then you can develop the application with `mvn wildfly-jar:dev-watch`.
+Locally you can start a test instance of Kafka/Zookeeper/React-Frontend with `docker compose up`.
+Then you can develop the Wildfly JEE application locally with `mvn wildfly-jar:dev-watch [-pDebug]`.
 
 ## Remote
 
@@ -34,3 +34,8 @@ helm install app wildfly/wildfly -f infra/wildfly-chart-values.yml
 - [galleon provisioning guide](https://docs.wildfly.org/24/Galleon_Guide.html)
 - [bitnami kafka chart docs](https://github.com/bitnami/charts/tree/master/bitnami/kafka/)
 - [wildfly chart docs](https://github.com/wildfly/wildfly-charts)
+- [MicroProfile](https://microprofile.io)
+- [SmallRye Projects](https://smallrye.io/projects/)
+- [MicroProfile/SmallRye Reactive Messaging](https://smallrye.io/smallrye-reactive-messaging/smallrye-reactive-messaging/3.8/index.html)
+- [MicroProfile Rest Client](https://github.com/eclipse/microprofile-rest-client)
+- [create react app](https://create-react-app.dev)
