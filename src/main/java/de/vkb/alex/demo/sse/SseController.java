@@ -20,11 +20,11 @@ import org.reactivestreams.Publisher;
 @ApplicationScoped
 public class SseController {
   @Inject
-  @Channel("emitter")
+  @Channel("sse-channel")
   Emitter<EventData> emitter;
 
   @Inject
-  @Channel("emitter")
+  @Channel("sse-channel")
   private Publisher<EventData> publisher;
 
   @POST
