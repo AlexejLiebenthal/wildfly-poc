@@ -2,12 +2,14 @@ package de.vkb.alex.demo.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.json.bind.JsonbBuilder;
+import javax.json.bind.Jsonb;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -26,11 +28,13 @@ import de.vkb.alex.demo.client.dto.User;
 @ApplicationScoped
 @Path("/jph")
 @Produces(MediaType.APPLICATION_JSON)
-@SuppressWarnings("java:S1135")
 public class JsonPlaceHolderController {
+  @Inject
+  private Jsonb jsonb;
+
   @RestClient
   @Inject
-  JsonPlaceHolderClient jsonPlaceHolderClient;
+  private JsonPlaceHolderClient jsonPlaceHolderClient;
 
   @GET
   @Path("comments")
@@ -53,7 +57,7 @@ public class JsonPlaceHolderController {
   // Response to List of Todo via Json-B
   public CompletionStage<List<Todo>> getTodosAsync() {
     return jsonPlaceHolderClient.getTodosAsync()
-        .thenApply(response -> JsonbBuilder.create().fromJson(response.readEntity(String.class), new ArrayList<Todo>() {
+        .thenApply(response -> jsonb.fromJson(response.readEntity(String.class), new ArrayList<Todo>() {
         }.getClass().getGenericSuperclass()));
   }
 
@@ -62,7 +66,7 @@ public class JsonPlaceHolderController {
   // Response to Single Todo via Json-B
   public CompletionStage<Todo> getTodoAsync(@PathParam("id") int id) {
     return jsonPlaceHolderClient.getTodoAsync(id)
-        .thenApply(response -> JsonbBuilder.create().fromJson(response.readEntity(String.class), Todo.class));
+        .thenApply(response -> jsonb.fromJson(response.readEntity(String.class), Todo.class));
   }
 
   @GET
@@ -81,15 +85,25 @@ public class JsonPlaceHolderController {
 
   @GET
   @Path("users/todos")
+  @SuppressWarnings("java:S117")
   // Merge Users with Todos
   public CompletionStage<Response> getUsersWithTodosAsync() {
-    var usersTask = getUsersAsync();
-    var todosTask = getTodosAsync()
+    // simulate longer REST call
+    var delayTask = CompletableFuture.runAsync(() -> {
+    }, CompletableFuture.delayedExecutor(1, TimeUnit.SECONDS));
+
+    var usersTask = getUsersAsync().toCompletableFuture();
+    var todosTask = getTodosAsync().toCompletableFuture()
         .thenApply(todos -> todos.stream().collect(Collectors.groupingBy(todo -> todo.userId)));
 
-    return usersTask.thenCombine(todosTask, (users, todos) -> users.stream().map(user -> {
-      user.todos = todos.get(user.id);
-      return user;
-    }).collect(Collectors.toList())).thenApply(Response::ok).thenApply(ResponseBuilder::build);
+    return CompletableFuture.allOf(delayTask, usersTask, todosTask).thenApply(__ -> {
+      var users = usersTask.getNow(null);
+      var todos = todosTask.getNow(null);
+
+      return users.stream().map(user -> {
+        user.todos = todos.get(user.id);
+        return user;
+      }).collect(Collectors.toList());
+    }).thenApply(Response::ok).thenApply(ResponseBuilder::build);
   }
 }

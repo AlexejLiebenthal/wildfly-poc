@@ -134,6 +134,13 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- MP Health -->
+    <dependency>
+      <groupId>org.eclipse.microprofile.health</groupId>
+      <artifactId>microprofile-health-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- MP Reactive Messaging -->
     <!-- 
       The MP Reactive Messaging (RM) API is provided in the Version 1.0 and not in the recent release of the 2.0 spec. 
