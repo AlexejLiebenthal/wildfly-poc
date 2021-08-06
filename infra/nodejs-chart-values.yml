@@ -1,0 +1,17 @@
+build:
+  uri: "https://github.com/AlexejLiebenthal/wildfly-poc"
+  ref: main
+  contextDir: frontend
+  env:
+    - name: YARN_ENABLED
+      value: "true"
+    - name: YARN_ARGS
+      value: --frozen-lockfile
+    - name: REACT_APP_BACKEND_API_URI
+      value: http://magic:8080/api
+  resources:
+    limits:
+      memory: 3Gi
+  source:
+    name: "ubi8-s2i-web-app:latest"
+    namespace:

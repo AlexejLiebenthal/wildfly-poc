@@ -4,12 +4,8 @@ services:
   frontend:
     build:
       context: frontend
-      dockerfile: Dockerfile.dev
     ports:
       - 3000:3000
-      - 9229:9229
-    environment:
-      - BACKEND_API_URI=host.docker.internal:8080/api
     stdin_open: true
     volumes:
       - ./frontend:/usr/src/app

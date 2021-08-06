@@ -7,7 +7,7 @@ import Users from "./components/Users";
 
 const App = () => {
   const backendApiUri =
-    process.env.BACKEND_API_URI || "http://localhost:8080/api";
+    process.env.REACT_APP_BACKEND_API_URI || "http://localhost:8080/api";
   const sseUri = `${backendApiUri}/sse`;
   const usersUri = `${backendApiUri}/jph/users/todos`;
   const helloUri = `${backendApiUri}/hello`;

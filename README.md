@@ -25,7 +25,15 @@ To deploy the wildfly server I use the official RedHat Wildfly Chart:
 
 ```bash
 helm repo add wildfly https://docs.wildfly.org/wildfly-charts/
-helm install app wildfly/wildfly -f infra/wildfly-chart-values.yml
+helm install magic wildfly/wildfly -f infra/wildfly-chart-values.yml
+```
+
+To deploy the react frontend I use the official RedHat NodeJS Chart:
+
+```
+oc import-image 'ubi8-s2i-web-app' --from='nodeshift/ubi8-s2i-web-app' --confirm
+helm repo add redhat-charts https://redhat-developer.github.io/redhat-helm-charts
+helm install cockpit redhat-charts/nodejs -f infra/nodejs-chart-values.yml
 ```
 
 ## Further Reading
